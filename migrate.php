@@ -3,6 +3,11 @@
  *	RubiKS migration script
  */
 
+function _log($msg)
+{
+	print('<b>' . $msg . '</b><br>' . PHP_EOL);
+}
+
 function insert($table, $assoc) {
 	global $new;
 	$q = "INSERT INTO " . $table . " (" . join(', ', array_keys($assoc)) . ") VALUES (" . join(', ', array_map(function ($e) { global $new; if ($e === NULL) { return 'NULL'; } return "'" . $new->escape_string($e) . "'"; }, $assoc)) . ")";
@@ -35,6 +40,7 @@ if (!$new->set_charset("utf8")) die("Error loading character set utf8: " . $new-
  *		(2) level > 0
  * 		(3) banned_date == '0000-00-00' (ampak to je verjetno posledica (2))	
  */
+_log('Users...');
 $new->query("TRUNCATE TABLE users");
 $users = array(); // club_id => id
 if ($result = $old->query("SELECT * FROM tekmovalci")) {
@@ -92,6 +98,7 @@ unset($result, $row, $user);
  * Events
  *	discipline => events
  */
+_log('Events...');
 $new->query("TRUNCATE TABLE events");
 $events = array();
 if ($result = $old->query("SELECT * FROM discipline")) {
@@ -135,6 +142,7 @@ function formatEvents($events)
 	return join(' ', array_map(function($event) { return str_replace(' ', '', $event); }, explode(', ', $events)));
 }
 
+_log('Competitions...');
 $new->query("TRUNCATE TABLE competitions");
 $competitions = array();
 $competitionsShortName2Id = array();
@@ -182,6 +190,7 @@ unset($result, $row, $competition);
  * Registrations
  *	prijave => registrations
  */
+_log('Registrations...');
 $new->query("TRUNCATE TABLE registrations");
 if ($result = $old->query("SELECT * FROM prijave")) {
 	while ($row = $result->fetch_assoc()) {
@@ -206,6 +215,7 @@ unset($result, $row, $registration);
  * Results
  *	casi => results
  */
+_log('Results...');
 $new->query("TRUNCATE TABLE results");
 if ($result = $old->query("SELECT * FROM casi")) {
 	while ($row = $result->fetch_assoc()) {
@@ -233,6 +243,11 @@ if ($result = $old->query("SELECT * FROM casi")) {
 	die('Could not select `casi`.');
 }
 unset($result, $row, $r);
+
+
+
+/* Done */
+_log('Done!');
 
 
 
