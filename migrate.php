@@ -91,6 +91,7 @@ unset($result, $row, $user);
  *	discipline => events
  */
 $new->query("TRUNCATE TABLE events");
+$events = array();
 if ($result = $old->query("SELECT * FROM discipline")) {
 	while ($row = $result->fetch_assoc()) {
 		$event = array(
@@ -104,11 +105,14 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 			'help' => $row['url']
 		);
 		insert('events', $event);
+		$event['event_id'] = $new->insert_id;
+		$events[$event['event_id']] = $event;
 	}
 } else {
 	die('Could not select `discipline`.');
 }
-
+unset($result, $row, $event);
+var_dump($events);
 
 
 
