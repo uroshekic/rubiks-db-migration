@@ -5,7 +5,7 @@
 
 function insert($table, $assoc) {
 	global $new;
-	$q = "INSERT INTO " . $table . " (" . join(', ', array_keys($assoc)) . ") VALUES (" . join(', ', array_map(function ($e) { global $new; return "'" . $new->escape_string($e) . "'"; }, $assoc)) . ")";
+	$q = "INSERT INTO " . $table . " (" . join(', ', array_keys($assoc)) . ") VALUES (" . join(', ', array_map(function ($e) { global $new; if ($e === NULL) { return 'NULL'; } return "'" . $new->escape_string($e) . "'"; }, $assoc)) . ")";
 	if (!$new->query($q)) {
 		var_dump($q);
 		die($new->error);
@@ -13,6 +13,8 @@ function insert($table, $assoc) {
 		return true;
 	}
 }
+
+
 
 /* Connect */
 $old = new mysqli('localhost', 'root', '', 'ddinfo_rubik');
@@ -107,12 +109,71 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 		insert('events', $event);
 		$event['event_id'] = $new->insert_id;
 		$events[$event['event_id']] = $event;
+
+		//var_dump($events);
 	}
 } else {
 	die('Could not select `discipline`.');
 }
 unset($result, $row, $event);
-var_dump($events);
+
+
+
+/*
+ * Competitions
+ *	tekme => competitions
+ */
+function club_id2user_id($cid) {
+	global $users;
+	return $cid === '' ? NULL : $users[$cid];
+}
+
+function formatEvents($events)
+{
+	// Trenutno je $events npr. '333 FM, 333, 333 BLD', mi pa hočemo to pretvoriti v '333FM 333 333BLD'
+	// readable_id dobiš iz short_name tako, da odstraniš presledke. -- Zaenkrat! To je veljalo še vsaj 17. 3. 2014!
+	return join(' ', array_map(function($event) { return str_replace(' ', '', $event); }, explode(', ', $events)));
+}
+
+$new->query("TRUNCATE TABLE competitions");
+$competitions = array();
+if ($result = $old->query("SELECT * FROM tekme")) {
+	while ($row = $result->fetch_assoc()) {
+		$competition = array(
+			'short_name' => $row['idtekme'],
+			'name' => $row['naziv'],
+			'date' => $row['datum'],
+			'time' => $row['ura'],
+			'max_competitors' => $row['studelezencev'],
+			'events' => formatEvents($row['discipline']),
+			'city' => $row['kraj'],
+			'venue' => $row['prizorisce'],
+			// Pretvori <br /> v PHP_EOL ?
+
+			'organiser' => $row['organizator'],
+			'delegate1' => club_id2user_id($row['delegat1']),
+			'delegate2' => club_id2user_id($row['delegat2']),
+			'delegate3' => club_id2user_id($row['rezerva']),
+			'algorithms_url' => '', 
+			// ???
+			//'algorithms_string' => $row['algoritmi'],
+
+			'description' => $row['opis'],
+			'registration_fee' => $row['prijavnina'],
+			'country' => $row['drzava'],
+			'status' => $row['status']
+		);
+		insert('competitions', $competition);
+		$competition['competition_id'] = $new->insert_id;
+		$competitions[$competition['competition_id']] = $competition;
+
+		//var_dump($row);
+	}
+} else {
+	die('Could not select `tekme`.');
+}
+unset($result, $row, $competition);
+var_dump($competitions);
 
 
 
