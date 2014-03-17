@@ -137,6 +137,7 @@ function formatEvents($events)
 
 $new->query("TRUNCATE TABLE competitions");
 $competitions = array();
+$competitionsShortName2Id = array();
 if ($result = $old->query("SELECT * FROM tekme")) {
 	while ($row = $result->fetch_assoc()) {
 		$competition = array(
@@ -166,6 +167,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 		insert('competitions', $competition);
 		$competition['competition_id'] = $new->insert_id;
 		$competitions[$competition['competition_id']] = $competition;
+		$competitionsShortName2Id[$competition['short_name']] = $competition['competition_id'];
 
 		//var_dump($row);
 	}
@@ -173,6 +175,30 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 	die('Could not select `tekme`.');
 }
 unset($result, $row, $competition);
+
+
+
+/*
+ * Registrations
+ *	prijave => registrations
+ */
+$new->query("TRUNCATE TABLE registrations");
+if ($result = $old->query("SELECT * FROM prijave")) {
+	while ($row = $result->fetch_assoc()) {
+		$registration = array(
+			'competition_id' => $competitionsShortName2Id[$row['tekmaid']],
+			'user_id' => $users[$row['zrksid']],
+			'events' => formatEvents($row['disc']),
+			'status' => $row['status'],
+			'notes' => $row['gledalci'],
+			'created_at' => $row['datumprijave'] . ' 00:00:00'
+		);
+		insert('registrations', $registration);
+	}
+} else {
+	die('Could not select `prijave`.');
+}
+unset($result, $row, $registration);
 
 
 
