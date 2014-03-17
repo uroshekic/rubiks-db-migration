@@ -86,6 +86,32 @@ unset($result, $row, $user);
 
 
 
+/* 
+ * Events
+ *	discipline => events
+ */
+$new->query("TRUNCATE TABLE events");
+if ($result = $old->query("SELECT * FROM discipline")) {
+	while ($row = $result->fetch_assoc()) {
+		$event = array(
+			'readable_id' => $row['iddiscipline'],
+			'short_name' => $row['kratica'],
+			'name' => $row['naziv'],
+			'attempts' => $row['stmerjenj'],
+			'type' => $row['tip'],
+			'time_limit' => $row['limit'],
+			'description' => $row['opis'],
+			'help' => $row['url']
+		);
+		insert('events', $event);
+	}
+} else {
+	die('Could not select `discipline`.');
+}
+
+
+
+
 /* Close connections */
 $old->close();
 $new->close();
