@@ -288,7 +288,7 @@ function createUrlSlug($str)
 	return $str;
 }
 
-_log('News (I)...');
+_log('News...');
 $new->query("TRUNCATE TABLE news");
 if ($result = $old->query("SELECT * FROM novice")) {
 	while ($row = $result->fetch_assoc()) {
