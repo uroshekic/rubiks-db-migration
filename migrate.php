@@ -36,7 +36,7 @@ if (!$new->set_charset("utf8")) die("Error loading character set utf8: " . $new-
  * 		(3) banned_date == '0000-00-00' (ampak to je verjetno posledica (2))	
  */
 $new->query("TRUNCATE TABLE users");
-$users = array(); // club_id => user_id
+$users = array(); // club_id => id
 if ($result = $old->query("SELECT * FROM tekmovalci")) {
 	while ($row = $result->fetch_assoc()) {
 		$user = array(
@@ -78,8 +78,8 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 		
 		insert('users', $user);
 
-		$user['user_id'] = $new->insert_id;
-		$users[$user['club_id']] = $user['user_id'];
+		$user['id'] = $new->insert_id;
+		$users[$user['club_id']] = $user['id'];
 	}
 } else {
 	die("Could not select `tekmovalci`.");
@@ -107,8 +107,8 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 			'help' => $row['url']
 		);
 		insert('events', $event);
-		$event['event_id'] = $new->insert_id;
-		$events[$event['event_id']] = $event;
+		$event['id'] = $new->insert_id;
+		$events[$event['readable_id']] = $event;
 
 		//var_dump($events);
 	}
@@ -165,9 +165,9 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'status' => $row['status']
 		);
 		insert('competitions', $competition);
-		$competition['competition_id'] = $new->insert_id;
-		$competitions[$competition['competition_id']] = $competition;
-		$competitionsShortName2Id[$competition['short_name']] = $competition['competition_id'];
+		$competition['id'] = $new->insert_id;
+		$competitions[$competition['id']] = $competition;
+		$competitionsShortName2Id[$competition['short_name']] = $competition['id'];
 
 		//var_dump($row);
 	}
@@ -199,6 +199,40 @@ if ($result = $old->query("SELECT * FROM prijave")) {
 	die('Could not select `prijave`.');
 }
 unset($result, $row, $registration);
+
+
+
+/*
+ * Results
+ *	casi => results
+ */
+$new->query("TRUNCATE TABLE results");
+if ($result = $old->query("SELECT * FROM casi")) {
+	while ($row = $result->fetch_assoc()) {
+		$r = array(
+			'competition_id' => $competitionsShortName2Id[$row['idtekme']],
+			'event_id' => $events[$row['disc']]['id'],
+			'round' => '0',
+			'user_id' => $users[$row['zrksid']],
+			'single' => $row['best'],
+			'average' => $row['avg'],
+			'results' => $row['vsiavg'],
+			'single_nr' => $row['nr'] === 'NR' ? '1' : '0',
+			'single_pb' => $row['pr'] === 'PB' ? '1' : '0',
+			'average_nr' => $row['nravg'] === 'NR' ? '1' : '0',
+			'average_pb' => $row['pravg'] === 'PB' ? '1' : '0',
+			'medal' => $row['pozicija'],
+			'date' => $row['datum'],
+			'championship_rank' => $row['rubiks']
+		);
+		insert('results', $r);
+
+		//var_dump($row, $r);
+	}
+} else {
+	die('Could not select `casi`.');
+}
+unset($result, $row, $r);
 
 
 
