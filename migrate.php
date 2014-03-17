@@ -246,6 +246,35 @@ unset($result, $row, $r);
 
 
 
+/*
+ * Delegates
+ *	delegat => delegates
+ */
+function delegateDegree($d)
+{
+	if ($d[strlen($d)-1] == '*') return 'K';
+	return $d[0];
+}
+_log('Delegates...');
+$new->query("TRUNCATE TABLE delegates");
+if ($result = $old->query("SELECT * FROM delegat")) {
+	while ($row = $result->fetch_assoc()) {
+		$delegate = array(
+			'user_id' => $users[$row['zrksid']],
+			'degree' => delegateDegree($row['status']),
+			'contact' => $row['kontakt'],
+			'region' => $row['regija'],
+			'activity' => '1'
+		);
+		insert('delegates', $delegate);
+	}
+} else {
+	die('Could not select `delegat`.');
+}
+unset($result, $row, $delegate);
+
+
+
 /* Done */
 _log('Done!');
 
