@@ -255,6 +255,7 @@ function delegateDegree($d)
 	if ($d[strlen($d)-1] == '*') return 'K';
 	return $d[0];
 }
+
 _log('Delegates...');
 $new->query("TRUNCATE TABLE delegates");
 if ($result = $old->query("SELECT * FROM delegat")) {
@@ -272,6 +273,39 @@ if ($result = $old->query("SELECT * FROM delegat")) {
 	die('Could not select `delegat`.');
 }
 unset($result, $row, $delegate);
+
+
+
+/*
+ * News
+ *	novice => news
+ */
+function createUrlSlug($str)
+{
+	$str = strtolower($str);
+	$str = str_replace(['š', 'Š', 'č', 'Č', 'ć', 'Ć', 'ž', 'Ž'], ['s', 'S', 'c', 'c', 'c', 'c', 'z', 'z' ], $str);
+	$str = preg_replace('/[^a-z0-9-]+/', '-', $str);
+	return $str;
+}
+
+_log('News (I)...');
+$new->query("TRUNCATE TABLE news");
+if ($result = $old->query("SELECT * FROM novice")) {
+	while ($row = $result->fetch_assoc()) {
+		$article = array(
+			'title' => $row['naslov'],
+			'text' => $row['novica'],
+			'user_id' => 1, // POPRAVI TO!
+			'created_at' => $row['datum'],
+			'url_slug' => createUrlSlug($row['naslov']),
+			'visible' => '1'
+		);
+		insert('news', $article);
+	}
+} else {
+	die('Could not select `novice`.');
+}
+unset($result, $row, $article);
 
 
 
