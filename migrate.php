@@ -173,7 +173,6 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 	die('Could not select `tekme`.');
 }
 unset($result, $row, $competition);
-var_dump($competitions);
 
 
 
