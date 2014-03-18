@@ -323,8 +323,9 @@ $competitionsShortName2Id = array();
 if (!mkdir('algorithms')) die('Could not create new directory.');
 if ($result = $old->query("SELECT * FROM tekme")) {
 	while ($row = $result->fetch_assoc()) {
+		if (!mkdir('algorithms/' . $row['idtekme'])) die('Could not create new directory.');
+		
 		if ($row['algoritmi'] !== '') {
-			if (!mkdir('algorithms/' . $row['idtekme'])) die('Could not create new directory.');
 
 			if (!$handle = fopen('algorithms/' . $row['idtekme'] . '/scrambles.html', 'w+')) {
 				die('Could not open/create file.');
