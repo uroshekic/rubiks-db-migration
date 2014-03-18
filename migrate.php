@@ -52,7 +52,7 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 			'last_name' => $row['priimek'],
 			'gender' => $row['spol'] == 'moški' ? 'm' : 'f',
 			'nationality' => $row['drzavljanstvo'],
-			/* Tu bi naj 'slovensko' zamenjali s 'SI' ? */
+			/* Tu bi naj 'slovensko' zamenjali s 'SI' ? Ali lahko zamenjam to s prvima dvema črkama club_id-ja? */
 
 			'birth_date' => $row['rd'],
 			'city' => $row['kraj'],
@@ -109,6 +109,8 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 			'name' => $row['naziv'],
 			'attempts' => $row['stmerjenj'],
 			'type' => $row['tip'],
+			// Obstajati bi moral še en stolpec, ki bi povedal, ali je disciplina single_only, ali pa ima tudi average.
+			
 			'time_limit' => $row['limit'],
 			'description' => $row['opis'],
 			'help' => $row['url']
@@ -235,6 +237,9 @@ if ($result = $old->query("SELECT * FROM casi")) {
 			'date' => $row['datum'],
 			'championship_rank' => $row['rubiks']
 		);
+
+		if ($row['disc'] === '33310MIN') $r['average'] = $row['stmeritev'];
+		if ($row['disc'] === '333FM') $r['average'] = $row['stmeritev'];
 		insert('results', $r);
 
 		//var_dump($row, $r);
