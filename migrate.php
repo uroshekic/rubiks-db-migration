@@ -326,11 +326,11 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 		if ($row['algoritmi'] !== '') {
 			if (!mkdir('algorithms/' . $row['idtekme'])) die('Could not create new directory.');
 
-			if (!$handle = fopen('algorithms/' . $row['idtekme'] . '/scrambles.txt', 'w+')) {
+			if (!$handle = fopen('algorithms/' . $row['idtekme'] . '/scrambles.html', 'w+')) {
 				die('Could not open/create file.');
 			}
 
-			if (fwrite($handle, $row['algoritmi']) === FALSE) {
+			if (fwrite($handle, nl2br($row['algoritmi'])) === FALSE) {
 				die('Cannot write to file.');
 			}
 
