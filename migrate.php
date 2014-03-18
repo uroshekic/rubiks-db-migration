@@ -163,9 +163,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'delegate1' => club_id2user_id($row['delegat1']),
 			'delegate2' => club_id2user_id($row['delegat2']),
 			'delegate3' => club_id2user_id($row['rezerva']),
-			'algorithms_url' => '', 
-			// ???
-			//'algorithms_string' => $row['algoritmi'],
+			'algorithms_url' => '', // This column should probably be removed!
 
 			'description' => $row['opis'],
 			'registration_fee' => $row['prijavnina'],
@@ -313,6 +311,38 @@ if ($result = $old->query("SELECT * FROM novice")) {
 	die('Could not select `novice`.');
 }
 unset($result, $row, $article);
+
+
+
+/*
+ * Save algorithms from `tekme` table
+ */
+_log("Algorithms...");
+$competitions = array();
+$competitionsShortName2Id = array();
+if (!mkdir('algorithms')) die('Could not create new directory.');
+if ($result = $old->query("SELECT * FROM tekme")) {
+	while ($row = $result->fetch_assoc()) {
+		if ($row['algoritmi'] !== '') {
+			if (!mkdir('algorithms/' . $row['idtekme'])) die('Could not create new directory.');
+
+			if (!$handle = fopen('algorithms/' . $row['idtekme'] . '/scrambles.txt', 'w+')) {
+				die('Could not open/create file.');
+			}
+
+			if (fwrite($handle, $row['algoritmi']) === FALSE) {
+				die('Cannot write to file.');
+			}
+
+			fclose($handle);
+
+			//var_dump($row['algoritmi']);
+		}
+	}
+} else {
+	die('Could not select `tekme` (II).');
+}
+unset($result, $row);
 
 
 
