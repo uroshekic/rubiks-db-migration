@@ -171,6 +171,10 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
 			'status' => $row['status']
+			/*	-1 zaklenjeno, vse obdelano, iz vseh vidikov zaključena tekma, vrže link do algoritmov
+				0 prijave končane, oziroma končana tekma
+				1 prijave odprte
+				2 vnesena nova tekma, a še neodprte prijave */
 		);
 		insert('competitions', $competition);
 		$competition['id'] = $new->insert_id;
