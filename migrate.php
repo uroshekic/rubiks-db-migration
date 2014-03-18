@@ -51,9 +51,7 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 			'name' => $row['ime'],
 			'last_name' => $row['priimek'],
 			'gender' => $row['spol'] == 'moški' ? 'm' : 'f',
-			'nationality' => $row['drzavljanstvo'],
-			/* Tu bi naj 'slovensko' zamenjali s 'SI' ? Ali lahko zamenjam to s prvima dvema črkama club_id-ja? */
-
+			'nationality' => substr($row['zrksid'], 0, 2), // $row['drzavljanstvo']
 			'birth_date' => $row['rd'],
 			'city' => $row['kraj'],
 			'email' => $row['mail'],
@@ -110,7 +108,7 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 			'attempts' => $row['stmerjenj'],
 			'type' => $row['tip'],
 			// Obstajati bi moral še en stolpec, ki bi povedal, ali je disciplina single_only, ali pa ima tudi average.
-			
+
 			'time_limit' => $row['limit'],
 			'description' => $row['opis'],
 			'help' => $row['url']
