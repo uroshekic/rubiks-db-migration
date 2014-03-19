@@ -225,6 +225,7 @@ function format33310min($stKock, $cas)
 	if (strlen($b) < 5) $b = str_pad($b, 5, '0');
 	return ($a . $b);
 }
+
 _log('Results...');
 $new->query("TRUNCATE TABLE results");
 if ($result = $old->query("SELECT * FROM casi")) {
@@ -365,7 +366,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 				die('Could not open/create file.');
 			}
 
-			if (fwrite($handle, nl2br($row['algoritmi'])) === FALSE) {
+			if (fwrite($handle, $row['algoritmi']) === FALSE) {
 				die('Cannot write to file.');
 			}
 
