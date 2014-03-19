@@ -237,8 +237,12 @@ if ($result = $old->query("SELECT * FROM casi")) {
 			'championship_rank' => $row['rubiks']
 		);
 
-		if ($row['disc'] === '33310MIN') $r['average'] = $row['stmeritev'];
-		if ($row['disc'] === '333FM') $r['average'] = $row['stmeritev'];
+		if ($row['disc'] === '333FM') {
+			$r['single'] = $row['stmeritev']; // St. potez
+		} elseif ($row['disc'] === '33310MIN') {
+			$r['single'] = $row['stmeritev']; // St. resenih kock
+			$r['average'] = $row['best']; // Cas
+		}
 		insert('results', $r);
 
 		//var_dump($row, $r);
