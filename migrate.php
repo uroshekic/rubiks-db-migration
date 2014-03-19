@@ -216,6 +216,13 @@ unset($result, $row, $registration);
  * Results
  *	casi => results
  */
+function format33310min($stKock, $cas)
+{
+	$a = (string) (400 - $stKock);
+	$b = (string) $cas;
+	if (strlen($b) < 5) $b = str_pad($b, 5, '0');
+	return ($a . $b);
+}
 _log('Results...');
 $new->query("TRUNCATE TABLE results");
 if ($result = $old->query("SELECT * FROM casi")) {
@@ -240,8 +247,30 @@ if ($result = $old->query("SELECT * FROM casi")) {
 		if ($row['disc'] === '333FM') {
 			$r['single'] = $row['stmeritev']; // St. potez
 		} elseif ($row['disc'] === '33310MIN') {
-			$r['single'] = $row['stmeritev']; // St. resenih kock
-			$r['average'] = $row['best']; // Cas
+			//$r['single'] = $row['stmeritev']; // St. resenih kock
+			//$r['average'] = $row['best']; // Cas
+
+			/* FORMAT BI MORALI POPRAVITI TAKO, DA BI VELJALO MANJ JE BOLJŠE!
+			 * Čas je dolžine največ 5 znakov (60000 = 10 * 60 * 100)
+			 * DNF je v bazi predstavljen z nizom, dolgim 8 znakov: 77777777 (DNS in DSQ sta še večja od DNF)
+			 * Ideja:
+			 * 	Število kock, ki jih tekmovalec lahko reši je navzgor omejeno z 200.
+			 *		To bi pomenilo 20 kock/minuto ~ 3s za eno kocko - vključno s pobiranjem in predogledom.
+			 * 	I) Če bi v bazo zapisali 200 - N in recimo, da nekdo reši 101 kocko v 59 999s.
+			 * 		Dobimo 9 959 999. Nekdo pa reši 1 kocko v 6000s, dobimo 1 996 000 - zadnji rezultat je manjši
+			 *		od prvega, čeprav ne bi smel biti.
+			 *		Tudi če se dogovorimo, da čas 6000s zapišemo kot 06000 (fiksna dolžina 5 znakov),
+			 *		19 906 000 - spet težave.
+			 *	II) Če tekmovalec reši N kock, zapišemo v bazo 400 - N. 
+			 *		Če je N med 0 in 200, bo 400 - N med 200 in 400 => 400 - N bo vedno tromestno število!
+			 *		Čas pa vedno zapišemo kot šestmestno število (na levo stran po potrebi dodamo ničle)!
+			 *	To nam omogoča, da najslabši (tekmovalec reši 0 kock v 10 minutah) rezultat
+			 * 	zapišemo kot '400' . '60000' (400 - 0 = 200)
+			 *		
+			 *	Uporabimo II) način!
+			 */
+
+			$r['single'] = format33310min($row['stmeritev'], $row['best']);
 		}
 		insert('results', $r);
 
