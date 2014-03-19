@@ -365,7 +365,7 @@ function newUrls($url)
 		//return $u . '/' . $matches[1] . '/';
 	}
 
-	return $url;
+	return $u;
 }
 
 _log('News...');
