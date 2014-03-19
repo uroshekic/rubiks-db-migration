@@ -109,8 +109,7 @@ if ($result = $old->query("SELECT * FROM discipline")) {
 			'name' => $row['naziv'],
 			'attempts' => $row['stmerjenj'],
 			'type' => $row['tip'],
-			// Obstajati bi moral še en stolpec, ki bi povedal, ali je disciplina single_only, ali pa ima tudi average.
-
+			'show_average' => in_array($row['iddiscipline'], array('33310MIN', '333FM', '333BLD', '2345')) ? '0' : '1',
 			'time_limit' => $row['limit'],
 			'description' => $row['opis'],
 			'help' => $row['url']
@@ -165,8 +164,6 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'delegate1' => club_id2user_id($row['delegat1']),
 			'delegate2' => club_id2user_id($row['delegat2']),
 			'delegate3' => club_id2user_id($row['rezerva']),
-			'algorithms_url' => '', // This column should probably be removed!
-
 			'description' => $row['opis'],
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
