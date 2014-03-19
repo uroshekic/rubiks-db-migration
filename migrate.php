@@ -328,13 +328,53 @@ function createUrlSlug($str)
 	return $str;
 }
 
+function fixArticle($article)
+{
+	$article = preg_replace_callback(
+		'|href=["\'](http\://www.rubik.si/klub/index.php.*?)["\']|', 
+		function ($matches)
+		{
+			return 'href="' . newUrls($matches[1]) . '"';
+		},
+		$article);
+	return $article;
+}
+
+function newUrls($url)
+{
+	$u = 'http://www.rubik.si/klub/index.php';
+	$matches = array();
+
+	// Competitions
+	if (preg_match('/page=competitions(&amp;|&)id=([a-z0-9]+)/i', $url, $matches)) {
+		return $u . '/competitions/' . $matches[2];
+	}
+
+	// Competitors
+	if (preg_match('/page=persons(&amp;|&)id=([a-z0-9]+)/i', $url, $matches)) {
+		return $u . '/competitors/' . $matches[2];
+	}
+
+	// Misc
+	if (preg_match('/page=(events|league|wca|startnina|clanstvo|prvenstvo|prijava|obvestila|persons)/i', $url, $matches)) {
+		$matches[1] = str_replace(
+			['obvestila', 'persons'], 
+			['news', 'competitors'], 
+			$matches[1]
+		);
+		//return $u . '/' . $matches[1] . '/';
+	}
+
+	return $url;
+}
+
 _log('News...');
 $new->query("TRUNCATE TABLE news");
 if ($result = $old->query("SELECT * FROM novice")) {
 	while ($row = $result->fetch_assoc()) {
 		$article = array(
 			'title' => $row['naslov'],
-			'text' => $row['novica'], // Popravi vse linke, ki vsebujejo 'rubik.si/klub/index.php'
+			'text' => fixArticle($row['novica']),
 			'user_id' => 1, // POPRAVI TO!
 			'created_at' => $row['datum'],
 			'url_slug' => createUrlSlug($row['naslov']),
