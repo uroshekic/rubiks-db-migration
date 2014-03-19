@@ -10,7 +10,8 @@ function _log($msg)
 	print('<b>' . $msg . '</b><br>' . PHP_EOL);
 }
 
-function insert($table, $assoc) {
+function insert($table, $assoc)
+{
 	global $new;
 	$q = "INSERT INTO " . $table . " (" . join(', ', array_keys($assoc)) . ") VALUES (" . join(', ', array_map(function ($e) { global $new; if ($e === NULL) { return 'NULL'; } return "'" . $new->escape_string($e) . "'"; }, $assoc)) . ")";
 	if (!$new->query($q)) {
@@ -131,7 +132,8 @@ unset($result, $row, $event);
  * Competitions
  *	tekme => competitions
  */
-function club_id2user_id($cid) {
+function club_id2user_id($cid)
+{
 	global $users;
 	return $cid === '' ? NULL : $users[$cid];
 }
