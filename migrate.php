@@ -323,7 +323,7 @@ unset($result, $row, $delegate);
 function createUrlSlug($str)
 {
 	$str = strtolower($str);
-	$str = str_replace(['š', 'Š', 'č', 'Č', 'ć', 'Ć', 'ž', 'Ž'], ['s', 'S', 'c', 'c', 'c', 'c', 'z', 'z' ], $str);
+	$str = str_replace(['š', 'č', 'ć', 'ž' ], ['s', 'c', 'c', 'z' ], $str);
 	$str = preg_replace('/[^a-z0-9-]+/', '-', $str);
 	return $str;
 }
