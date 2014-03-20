@@ -395,18 +395,19 @@ unset($result, $row, $article);
 _log("Algorithms...");
 $competitions = array();
 $competitionsShortName2Id = array();
-if (!mkdir('algorithms')) die('Could not create new directory.');
+if (!is_dir('algorithms') && !mkdir('algorithms')) die('Could not create new directory.');
 if ($result = $old->query("SELECT * FROM tekme")) {
 	while ($row = $result->fetch_assoc()) {
-		if (!mkdir('algorithms/' . $row['idtekme'])) die('Could not create new directory.');
+		$dir = 'algorithms/' . $row['idtekme'];
+		if (!is_dir($dir) && !mkdir($dir)) die('Could not create new directory.');
 		
 		if ($row['algoritmi'] !== '') {
 
-			if (!$handle = fopen('algorithms/' . $row['idtekme'] . '/scrambles.html', 'w+')) {
+			if (!$handle = fopen($dir . '/scrambles.html', 'w+')) {
 				die('Could not open/create file.');
 			}
 
-			if (fwrite($handle, $row['algoritmi']) === FALSE) {
+			if (fwrite($handle, nl2br($row['algoritmi'])) === FALSE) {
 				die('Cannot write to file.');
 			}
 
