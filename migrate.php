@@ -393,8 +393,6 @@ unset($result, $row, $article);
  * Save algorithms from `tekme` table
  */
 _log("Algorithms...");
-$competitions = array();
-$competitionsShortName2Id = array();
 if (!is_dir('algorithms') && !mkdir('algorithms')) die('Could not create new directory.');
 if ($result = $old->query("SELECT * FROM tekme")) {
 	while ($row = $result->fetch_assoc()) {
@@ -419,7 +417,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 } else {
 	die('Could not select `tekme` (II).');
 }
-unset($result, $row);
+unset($result, $row, $result, $dir, $row, $handle);
 
 
 
