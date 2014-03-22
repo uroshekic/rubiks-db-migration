@@ -169,7 +169,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'description' => $row['opis'],
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
-			'status' => $row['status']
+			'status' => (int) substr($row['datum'], 0, 4) < 2014 ? '-1' : $row['status']
 			/*	-1 zaklenjeno, vse obdelano, iz vseh vidikov zaključena tekma, vrže link do algoritmov
 				0 prijave končane, oziroma končana tekma
 				1 prijave odprte
@@ -323,7 +323,7 @@ unset($result, $row, $delegate);
 function createUrlSlug($str)
 {
 	$str = strtolower($str);
-	$str = str_replace(['š', 'č', 'ć', 'ž' ], ['s', 'c', 'c', 'z' ], $str);
+	//$str = str_replace(['š', 'č', 'ć', 'ž' ], ['s', 'c', 'c', 'z' ], $str); // Doesn't work!
 	$str = preg_replace('/[^a-z0-9-]+/', '-', $str);
 	return $str;
 }
