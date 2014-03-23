@@ -390,6 +390,32 @@ unset($result, $row, $article);
 
 
 /*
+ * Credits
+ */
+_log("Credits");
+$new->query("TRUNCATE TABLE credits");
+$contents = file_get_contents("http://www.rubik.si/klub/index.php?page=zahvale");
+$matches = array();
+preg_match_all("|<td width='50%' .*?>(.*?)</td>|is", $contents, $matches);
+//var_dump($matches);
+foreach ($matches[1] as $match) {
+	$data = array();
+	preg_match_all("|<b>(.*?)</b><br>(.*?)<br>\s*<a .*?>(.*?)</a>|is", $match, $data);
+	if (count($data[0]) == 0) continue;
+	$data = array(
+		'organization' => $data[1][0],
+		'address' => $data[2][0],
+		'url' => $data[3][0],
+		'visible' => '1'
+	);
+	insert('credits', $data);
+	//var_dump($data);
+}
+unset($contents, $matches, $match, $data);
+
+
+
+/*
  * Save algorithms from `tekme` table
  */
 _log("Algorithms...");
