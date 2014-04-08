@@ -202,7 +202,7 @@ if ($result = $old->query("SELECT * FROM prijave")) {
 			'competition_id' => $competitionsShortName2Id[$row['tekmaid']],
 			'user_id' => $users[$row['zrksid']],
 			'events' => formatEvents($row['disc']),
-			'status' => $row['status'],
+			'confirmed' => $row['status'],
 			'notes' => $row['gledalci'],
 			'created_at' => $row['datumprijave'] . ' 00:00:00'
 		);
