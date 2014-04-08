@@ -79,7 +79,8 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 			'banned_date' => $row['datumreg'], // Ja, to je pravilno. :-)
 			'forum_nickname' => $row['vzdevek'],
 			'club_authority' => $row['organ'],
-			'membership_year' => $row['lclan']
+			'membership_year' => $row['lclan'],
+			'confirmed' => 1,
 		);
 		//if ($row['vzdevek'] == 'Adut') var_dump($row, $user);
 		
@@ -330,6 +331,8 @@ function createUrlSlug($str)
 
 function fixArticle($article)
 {
+	return $article; // Testing
+
 	$article = preg_replace_callback(
 		'|href=["\'](http\://www.rubik.si/klub/index.php.*?)["\']|', 
 		function ($matches)
