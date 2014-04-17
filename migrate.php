@@ -204,7 +204,8 @@ if ($result = $old->query("SELECT * FROM prijave")) {
 			'events' => formatEvents($row['disc']),
 			'confirmed' => $row['status'],
 			'notes' => $row['gledalci'],
-			'created_at' => $row['datumprijave'] . ' 00:00:00'
+			'created_at' => $row['datumprijave'] . ' 00:00:00',
+			'updated_at' => $row['datumprijave'] . ' 00:00:00'
 		);
 		insert('registrations', $registration);
 	}
