@@ -51,6 +51,7 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 		$user = array(
 			'club_id' => $row['zrksid'],
 			'password' => '',
+			'old_password' => $row['geslo'],
 			'name' => $row['ime'],
 			'last_name' => $row['priimek'],
 			'gender' => $row['spol'] == 'moški' ? 'm' : 'f',
@@ -381,8 +382,7 @@ if ($result = $old->query("SELECT * FROM novice")) {
 			'text' => fixArticle($row['novica']),
 			'user_id' => 1, // POPRAVI TO!
 			'created_at' => $row['datum'],
-			'url_slug' => createUrlSlug($row['naslov']),
-			'visible' => '1'
+			'url_slug' => createUrlSlug($row['naslov'])
 		);
 		insert('news', $article);
 	}
