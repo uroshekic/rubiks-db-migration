@@ -296,7 +296,7 @@ unset($result, $row, $r);
 function delegateDegree($d)
 {
 	if ($d[strlen($d)-1] == '*') return 'K';
-	return $d[0];
+	return strtoupper($d[0]);
 }
 
 _log('Delegates...');
