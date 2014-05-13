@@ -171,6 +171,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'description' => $row['opis'],
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
+			'championship' => (int) (strtotime($row['datum']) >= strtotime('2012-01-01')),
 			'status' => (int) substr($row['datum'], 0, 4) < 2014 ? '-1' : $row['status']
 			/*	-1 zaklenjeno, vse obdelano, iz vseh vidikov zaključena tekma, vrže link do algoritmov
 				0 prijave končane, oziroma končana tekma
