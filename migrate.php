@@ -171,12 +171,12 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'description' => $row['opis'],
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
-			'championship' => (int) (strtotime($row['datum']) >= strtotime('2012-01-01')),
+			'championship' => (int) (strtotime($row['datum']) >= strtotime('2011-01-01')),
 			'status' => (int) substr($row['datum'], 0, 4) < 2014 ? '-1' : $row['status']
 			/*	-1 zaklenjeno, vse obdelano, iz vseh vidikov zaključena tekma, vrže link do algoritmov
 				0 prijave končane, oziroma končana tekma
 				1 prijave odprte
-				2 vnesena nova tekma, a še neodprte prijave */
+				2 vnesena nova tekma, a še neodprte prijave - TEGA V NOVEM SISTEMU NI! */
 		);
 		insert('competitions', $competition);
 		$competition['id'] = $new->insert_id;
@@ -389,6 +389,27 @@ if ($result = $old->query("SELECT * FROM novice")) {
 	}
 } else {
 	die('Could not select `novice`.');
+}
+unset($result, $row, $article);
+
+/*
+ * Notices
+ *	obvestila => notices
+ */
+ _log('Notices...');
+$new->query("TRUNCATE TABLE notices");
+if ($result = $old->query("SELECT * FROM obvestila")) {
+	while ($row = $result->fetch_assoc()) {
+		$article = array(
+			'title' => $row['naslov'],
+			'text' => $row['novica'],
+			'created_at' => $row['datum'],
+			'visible_until' => $row['veljavnost'],
+		);
+		insert('notices', $article);
+	}
+} else {
+	die('Could not select `obvestila`.');
 }
 unset($result, $row, $article);
 
