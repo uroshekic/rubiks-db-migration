@@ -334,7 +334,7 @@ function createUrlSlug($str)
 
 function fixArticle($article)
 {
-	return $article; // Testing
+	//return $article; // Testing
 
 	$article = preg_replace_callback(
 		'|href=["\'](http\://www.rubik.si/klub/index.php.*?)["\']|', 
@@ -343,12 +343,13 @@ function fixArticle($article)
 			return 'href="' . newUrls($matches[1]) . '"';
 		},
 		$article);
+
 	return $article;
 }
 
 function newUrls($url)
 {
-	$u = 'http://www.rubik.si/klub/index.php';
+	$u = ''; // Initial url
 	$matches = array();
 
 	// Competitions
@@ -362,16 +363,26 @@ function newUrls($url)
 	}
 
 	// Misc
-	if (preg_match('/page=(events|league|wca|startnina|clanstvo|prvenstvo|prijava|obvestila|persons)/i', $url, $matches)) {
+	if (preg_match('/page=(events|league|wca|startnina|clanstvo|prvenstvo|prijava|obvestila|persons|competitions&without=1)/i', $url, $matches)) {
 		$matches[1] = str_replace(
-			['obvestila', 'persons'], 
-			['news', 'competitors'], 
+			[
+				'events', 'league', 'wca', 'startnina', 
+				'clanstvo', 'prvenstvo', 'prijava', 'obvestila', 
+				'persons', 'competitions&without=1',
+			], 
+			[ 
+				'events', 'national-championship', 'static/mednarodna-tekmovanja', 'static/vclanite-se-v-klub', 
+				'members', 'national-championship', 'competitions/future', 'notices', 
+				'competitors', 'competitions'
+			], 
 			$matches[1]
 		);
-		//return $u . '/' . $matches[1] . '/';
+		return $u . '/' . $matches[1];
 	}
 
-	return $u;
+	//var_dump($url); // Display links that don't match regular expressions above
+
+	return $u . '/static/not-found';
 }
 
 _log('News...');
