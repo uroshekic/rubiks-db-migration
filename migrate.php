@@ -60,15 +60,15 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 			'city' => $row['kraj'],
 			'email' => $row['mail'],
 			'notes' => $row['opombe'],
-			'status' => '-----',
-			/* $row['status'] - kaj natančno to pomeni?
+			/* 'status' => '-----',
+			$row['status'] - kaj natančno to pomeni?
 				0 neregistriran, se še ne more prijaviti, 
 				1 registriran,
 				2 registriran, ima izključeno obveščanje z maili */
 
 			'joined_date' => $row['datum'],
-			'level' => '-----',
-			/* $row['level'] pravice na portalu:
+			/* 'level' => '-----',
+			 $row['level'] pravice na portalu:
 				5 admin - vse
 				4 delegat - tekme
 				3 urednik - novice
