@@ -93,6 +93,8 @@ if ($result = $old->query("SELECT * FROM tekmovalci")) {
 } else {
 	die("Could not select `tekmovalci`.");
 }
+// Assign admin role (role_id = 1) to at least one user
+insert('assigned_roles', array('user_id' => $users['SIM93HEKUR10'], 'role_id' => 1));
 unset($result, $row, $user);
 
 
