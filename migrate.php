@@ -311,6 +311,10 @@ if ($result = $old->query("SELECT * FROM delegat")) {
 			'region' => $row['regija'],
 			'activity' => '1'
 		);
+		if ($row['zrksid'] == 'SIM92LESZI10') { // Izjema: Žiga Lesar, neaktivni delegat stopnje B
+			$delegate['degree'] = 'B';
+			$delegate['activity'] = '0';
+		}
 		insert('delegates', $delegate);
 	}
 } else {
