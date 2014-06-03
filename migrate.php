@@ -149,6 +149,13 @@ function formatEvents($events)
 	return join(' ', array_map(function($event) { return str_replace(' ', '', $event); }, explode(', ', $events)));
 }
 
+function competitionStatus($competition)
+{
+	//if ((int) substr($competition['datum'], 0, 4) < 2014) return '-1';
+	if (strtotime($competition['datum']) < strtotime(date('Y-m-d')) + 1000 * 60 * 60 * 24 * 7) return '-1';
+	return $competition['status'];
+}
+
 _log('Competitions...');
 $new->query("TRUNCATE TABLE competitions");
 $competitions = array();
@@ -174,7 +181,7 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 			'registration_fee' => $row['prijavnina'],
 			'country' => $row['drzava'],
 			'championship' => (int) (strtotime($row['datum']) >= strtotime('2011-01-01')),
-			'status' => (int) substr($row['datum'], 0, 4) < 2014 ? '-1' : $row['status']
+			'status' => competitionStatus($row)
 			/*	-1 zaklenjeno, vse obdelano, iz vseh vidikov zaključena tekma, vrže link do algoritmov
 				0 prijave končane, oziroma končana tekma
 				1 prijave odprte
