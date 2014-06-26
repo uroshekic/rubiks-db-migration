@@ -25,11 +25,11 @@ function insert($table, $assoc)
 
 
 /* Connect */
-$old = new mysqli($old['host'], $old['user'], $old['pass'], $old['db']);
+$old = new mysqli($old['host'], $old['user'], $old['pass'], $old['db'], $old['port']);
 if ($old->connect_error) die('Connection Error (' . $old->connect_errno . ') ' . $old->connect_error);
 if (!$old->set_charset("utf8")) die("Error loading character set utf8: " . $old->error);
 
-$new = new mysqli($new['host'], $new['user'], $new['pass'], $new['db']);
+$new = new mysqli($new['host'], $new['user'], $new['pass'], $new['db'], $new['port']);
 if ($new->connect_error) die('Connection Error (' . $new->connect_errno . ') ' . $new->connect_error);
 if (!$new->set_charset("utf8")) die("Error loading character set utf8: " . $new->error);
 
