@@ -246,7 +246,7 @@ if ($result = $old->query("SELECT * FROM casi")) {
 		$r = array(
 			'competition_id' => $competitionsShortName2Id[$row['idtekme']],
 			'event_id' => $events[$row['disc']]['id'],
-			//'round_id' => '',
+			'round_id' => '1',
 			'user_id' => $users[$row['zrksid']],
 			'single' => $row['best'],
 			'average' => $row['avg'],
@@ -494,6 +494,18 @@ if ($result = $old->query("SELECT * FROM tekme")) {
 	die('Could not select `tekme` (II).');
 }
 unset($result, $row, $result, $dir, $row, $handle);
+
+
+
+/*
+ * Static pages
+ */
+$staticPagesFile = 'static_pages.sql';
+if (file_exists($staticPagesFile)) {
+	_log('Static pages...');
+	$new->query("TRUNCATE TABLE static_pages");
+	var_dump($new->query(file_get_contents($staticPagesFile)));
+}
 
 
 
